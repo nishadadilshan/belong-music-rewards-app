@@ -16,10 +16,12 @@ export default function PlayerScreen() {
     isPlaying,
     currentPosition,
     duration,
+    playbackSpeed,
     play,
     pause,
     stop,
     seekTo,
+    setPlaybackSpeed,
     loading,
     error,
   } = useMusicPlayer();
@@ -146,6 +148,31 @@ export default function PlayerScreen() {
           >
             <Text style={styles.controlButtonText}>10s ⏩</Text>
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.speedControls}>
+          <Text style={styles.speedLabel}>Speed</Text>
+          <View style={styles.speedButtons}>
+            {[0.5, 1, 1.25, 2].map((speed) => (
+              <TouchableOpacity
+                key={speed}
+                style={[
+                  styles.speedButton,
+                  playbackSpeed === speed && styles.speedButtonActive,
+                ]}
+                onPress={() => setPlaybackSpeed(speed)}
+              >
+                <Text
+                  style={[
+                    styles.speedButtonText,
+                    playbackSpeed === speed && styles.speedButtonTextActive,
+                  ]}
+                >
+                  {speed}x
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
 
         <View style={styles.progressContainer}>
@@ -305,6 +332,43 @@ const styles = StyleSheet.create({
     color: THEME.colors.primary,
     fontSize: 16,
     marginTop: THEME.spacing.md,
+  },
+  speedControls: {
+    marginVertical: THEME.spacing.lg,
+    alignItems: 'center',
+  },
+  speedLabel: {
+    color: THEME.colors.text.secondary,
+    fontSize: 14,
+    fontFamily: THEME.fonts.medium,
+    marginBottom: THEME.spacing.sm,
+  },
+  speedButtons: {
+    flexDirection: 'row',
+    gap: THEME.spacing.sm,
+  },
+  speedButton: {
+    paddingVertical: THEME.spacing.sm,
+    paddingHorizontal: THEME.spacing.md,
+    borderRadius: THEME.borderRadius.md,
+    backgroundColor: THEME.colors.glassDark,
+    borderWidth: 1,
+    borderColor: THEME.colors.border,
+    minWidth: 60,
+    alignItems: 'center',
+  },
+  speedButtonActive: {
+    backgroundColor: THEME.colors.primary,
+    borderColor: THEME.colors.primary,
+  },
+  speedButtonText: {
+    color: THEME.colors.text.secondary,
+    fontSize: 14,
+    fontFamily: THEME.fonts.medium,
+  },
+  speedButtonTextActive: {
+    color: THEME.colors.text.primary,
+    fontWeight: 'bold',
   },
 });
 

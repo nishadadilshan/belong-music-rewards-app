@@ -8,10 +8,12 @@ interface UseMusicPlayerReturn {
   currentTrack: MusicChallenge | null;
   currentPosition: number;
   duration: number;
+  playbackSpeed: number;
   play: (track: MusicChallenge) => Promise<void>;
   pause: () => Promise<void>;
   stop: () => Promise<void>;
   seekTo: (seconds: number) => Promise<void>;
+  setPlaybackSpeed: (speed: number) => Promise<void>;
   loading: boolean;
   error: string | null;
 }
@@ -19,7 +21,7 @@ interface UseMusicPlayerReturn {
 export const useMusicPlayer = (): UseMusicPlayerReturn => {
   const playbackState = usePlaybackState();
   const progress = useProgress();
-  const { currentTrack, setCurrentTrack, setIsPlaying } = useMusicStore();
+  const { currentTrack, setCurrentTrack, setIsPlaying, playbackSpeed, setPlaybackSpeed } = useMusicStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,6 +41,8 @@ export const useMusicPlayer = (): UseMusicPlayerReturn => {
         });
 
         await TrackPlayer.play();
+        // Apply the stored playback speed
+        await TrackPlayer.setRate(playbackSpeed);
         setCurrentTrack(track);
         setIsPlaying(true);
       } catch (err) {
@@ -49,7 +53,7 @@ export const useMusicPlayer = (): UseMusicPlayerReturn => {
         setLoading(false);
       }
     },
-    [setCurrentTrack, setIsPlaying]
+    [setCurrentTrack, setIsPlaying, playbackSpeed]
   );
 
   const pause = useCallback(async () => {
@@ -80,6 +84,16 @@ export const useMusicPlayer = (): UseMusicPlayerReturn => {
     }
   }, []);
 
+  const setPlaybackSpeedHandler = useCallback(async (speed: number) => {
+    try {
+      await TrackPlayer.setRate(speed);
+      setPlaybackSpeed(speed);
+    } catch (err) {
+      console.error('Set playback speed error:', err);
+      setError('Failed to set playback speed');
+    }
+  }, [setPlaybackSpeed]);
+
   useEffect(() => {
     const state = playbackState?.state;
     if (state === State.Playing) {
@@ -96,10 +110,12 @@ export const useMusicPlayer = (): UseMusicPlayerReturn => {
     currentTrack,
     currentPosition: progress.position,
     duration: progress.duration,
+    playbackSpeed,
     play,
     pause,
     stop,
     seekTo,
+    setPlaybackSpeed: setPlaybackSpeedHandler,
     loading,
     error,
   };
