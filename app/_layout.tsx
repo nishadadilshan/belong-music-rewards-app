@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Slot } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { setupTrackPlayer } from '../src/services/audioService';
 import { useMusicStore } from '../src/stores/musicStore';
 
@@ -13,5 +14,9 @@ export default function RootLayout() {
     loadChallenges();
   }, [loadChallenges]);
 
-  return <Slot />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Slot />
+    </GestureHandlerRootView>
+  );
 }

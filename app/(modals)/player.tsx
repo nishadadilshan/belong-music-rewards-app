@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { GlassCard } from '../../src/components/ui/GlassCard';
 import { PointsCounter } from '../../src/components/ui/PointsCounter';
 import { useMusicPlayer } from '../../src/hooks/useMusicPlayer';
@@ -37,6 +38,8 @@ export default function PlayerScreen() {
 
   const [hasStarted, setHasStarted] = useState(false);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
+  const translateY = useState(new Animated.Value(0))[0];
+  const opacity = useState(new Animated.Value(1))[0];
 
   useEffect(() => {
     if (currentTrack && !hasStarted) {
@@ -98,15 +101,75 @@ export default function PlayerScreen() {
     router.back();
   };
 
+  // Swipe down gesture handler
+  const panGesture = Gesture.Pan()
+    .onUpdate((event) => {
+      // Only allow downward swipes
+      if (event.translationY > 0) {
+        translateY.setValue(event.translationY);
+        // Reduce opacity as user swipes down (max 200px for full fade)
+        const opacityValue = Math.max(0, 1 - event.translationY / 200);
+        opacity.setValue(opacityValue);
+      }
+    })
+    .onEnd((event) => {
+      // Close if swiped down more than 150px OR if velocity is high enough (> 500)
+      const shouldClose = event.translationY > 150 || (event.translationY > 100 && event.velocityY > 500);
+      
+      if (shouldClose) {
+        Animated.parallel([
+          Animated.timing(translateY, {
+            toValue: 500,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacity, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          handleClose();
+        });
+      } else {
+        // Spring back to original position
+        Animated.parallel([
+          Animated.spring(translateY, {
+            toValue: 0,
+            damping: 20,
+            stiffness: 300,
+            useNativeDriver: true,
+          }),
+          Animated.spring(opacity, {
+            toValue: 1,
+            damping: 20,
+            stiffness: 300,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }
+    });
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleClose}>
-          <Text style={styles.closeButton}>✕</Text>
-        </TouchableOpacity>
-      </View>
+      <GestureDetector gesture={panGesture}>
+        <Animated.View
+          style={[
+            styles.gestureContainer,
+            {
+              transform: [{ translateY }],
+              opacity,
+            },
+          ]}
+        >
+          <View style={styles.header}>
+            <View style={styles.swipeIndicator} />
+            <TouchableOpacity onPress={handleClose}>
+              <Text style={styles.closeButton}>✕</Text>
+            </TouchableOpacity>
+          </View>
 
-      <View style={styles.content}>
+          <View style={styles.content}>
         <GlassCard style={styles.trackCard}>
           <View style={styles.trackInfo}>
             <Text style={styles.trackTitle}>{currentTrack.title}</Text>
@@ -210,7 +273,9 @@ export default function PlayerScreen() {
           </View>
           <Text style={styles.timeText}>{formatTime(duration)}</Text>
         </View>
-      </View>
+        </View>
+        </Animated.View>
+      </GestureDetector>
     </SafeAreaView>
   );
 }
@@ -220,9 +285,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: THEME.colors.background,
   },
+  gestureContainer: {
+    flex: 1,
+  },
   header: {
     padding: THEME.spacing.md,
     alignItems: 'flex-end',
+    position: 'relative',
+  },
+  swipeIndicator: {
+    position: 'absolute',
+    top: 8,
+    left: '50%',
+    marginLeft: -20,
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: THEME.colors.text.secondary,
+    opacity: 0.5,
   },
   closeButton: {
     color: THEME.colors.text.primary,

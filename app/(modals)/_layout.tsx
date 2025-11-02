@@ -6,10 +6,24 @@ export default function ModalsLayout() {
       screenOptions={{
         presentation: 'modal',
         headerShown: false,
+        gestureEnabled: true,
+        animation: 'slide_from_bottom',
       }}
     >
-      <Stack.Screen name="player" />
-      <Stack.Screen name="challenge-detail" />
+      <Stack.Screen 
+        name="player" 
+        options={{
+          gestureEnabled: true,
+          gestureDirection: 'vertical',
+        }}
+      />
+      <Stack.Screen 
+        name="challenge-detail" 
+        options={{
+          gestureEnabled: true,
+          gestureDirection: 'vertical',
+        }}
+      />
     </Stack>
   );
 }
