@@ -1,0 +1,17 @@
+import { useEffect } from 'react';
+import { Slot } from 'expo-router';
+import { setupTrackPlayer } from '../src/services/audioService';
+import { useMusicStore } from '../src/stores/musicStore';
+
+export default function RootLayout() {
+  const { loadChallenges } = useMusicStore();
+
+  useEffect(() => {
+    setupTrackPlayer().catch((error) => {
+      console.error('Failed to setup TrackPlayer:', error);
+    });
+    loadChallenges();
+  }, [loadChallenges]);
+
+  return <Slot />;
+}
