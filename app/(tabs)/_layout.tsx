@@ -2,12 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
-import { THEME } from '../../src/constants/theme';
+import { useTheme } from '../../src/hooks/useTheme';
 
-const TabIcon = ({ name, focused }: { name: string; focused: boolean }) => {
+const TabIcon = ({ name, focused, colors }: { name: string; focused: boolean; colors: any }) => {
   return (
     <View style={styles.iconContainer}>
-      <View style={[styles.iconWrapper, focused && styles.iconWrapperFocused]}>
+      <View style={[
+        styles.iconWrapper, 
+        focused && [styles.iconWrapperFocused, { backgroundColor: `${colors.primary}25` }]
+      ]}>
         <Text style={[styles.icon, focused && styles.iconFocused]}>
           {name === 'home' ? (focused ? '🎵' : '🎧') : (focused ? '👤' : '👤')}
         </Text>
@@ -17,20 +20,25 @@ const TabIcon = ({ name, focused }: { name: string; focused: boolean }) => {
 };
 
 export default function TabsLayout() {
+  const { colors, fonts, isDark } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: THEME.colors.primary,
-        tabBarInactiveTintColor: THEME.colors.text.secondary,
-        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarStyle: [styles.tabBar, { 
+          borderTopColor: colors.border, 
+          backgroundColor: colors.background 
+        }],
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.text.secondary,
+        tabBarLabelStyle: [styles.tabBarLabel, { fontFamily: fonts.medium }],
         tabBarLabelPosition: 'below-icon',
         tabBarItemStyle: styles.tabBarItem,
         tabBarBackground: () => (
           <BlurView
             intensity={30}
-            tint="dark"
+            tint={isDark ? 'dark' : 'light'}
             style={StyleSheet.absoluteFillObject}
           />
         ),
@@ -40,7 +48,7 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ focused }) => <TabIcon name="home" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="home" focused={focused} colors={colors} />,
           tabBarButton: (props) => {
             const { onPress, accessibilityState, children, delayLongPress, ...restProps } = props;
             return (
@@ -53,7 +61,7 @@ export default function TabsLayout() {
               >
                 {children}
                 {accessibilityState?.selected && (
-                  <View style={styles.activeIndicator} />
+                  <View style={[styles.activeIndicator, { backgroundColor: colors.primary }]} />
                 )}
               </TouchableOpacity>
             );
@@ -64,7 +72,7 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ focused }) => <TabIcon name="profile" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="profile" focused={focused} colors={colors} />,
           tabBarButton: (props) => {
             const { onPress, accessibilityState, children, delayLongPress, ...restProps } = props;
             return (
@@ -77,7 +85,7 @@ export default function TabsLayout() {
               >
                 {children}
                 {accessibilityState?.selected && (
-                  <View style={styles.activeIndicator} />
+                  <View style={[styles.activeIndicator, { backgroundColor: colors.primary }]} />
                 )}
               </TouchableOpacity>
             );
@@ -98,14 +106,11 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: THEME.colors.border,
-    backgroundColor: THEME.colors.background,
     elevation: 0,
     shadowOpacity: 0,
   },
   tabBarLabel: {
     fontSize: 13,
-    fontFamily: THEME.fonts.medium,
     fontWeight: '600',
     marginTop: 4,
     marginBottom: 8,
@@ -144,7 +149,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   iconWrapperFocused: {
-    backgroundColor: `${THEME.colors.primary}25`,
     transform: [{ scale: 1.05 }],
   },
   icon: {
@@ -163,7 +167,6 @@ const styles = StyleSheet.create({
     width: 24,
     height: 3,
     borderRadius: 2,
-    backgroundColor: THEME.colors.primary,
     zIndex: 10,
   },
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, ViewStyle, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { THEME } from '../../constants/theme';
+import { useTheme } from '../../hooks/useTheme';
 
 interface GlassButtonProps {
   title: string;
@@ -21,25 +21,30 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
   style,
   variant = 'primary',
 }) => {
+  const { colors, shadows, borderRadius, isDark, spacing } = useTheme();
+
   const getGradientColors = () => {
     if (disabled) {
-      return ['rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.05)'];
+      return isDark 
+        ? ['rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.05)']
+        : ['rgba(0, 0, 0, 0.04)', 'rgba(0, 0, 0, 0.02)'];
     }
     switch (variant) {
       case 'primary':
-        return THEME.colors.gradients.primary;
+        return colors.gradients.primary;
       case 'secondary':
-        return THEME.colors.gradients.secondary;
+        return colors.gradients.secondary;
       case 'accent':
-        return THEME.colors.gradients.accent;
+        return colors.gradients.accent;
       default:
-        return THEME.colors.gradients.primary;
+        return colors.gradients.primary;
     }
   };
 
   const getTextColor = () => {
-    if (disabled) return THEME.colors.text.tertiary;
-    return THEME.colors.text.primary;
+    if (disabled) return colors.text.tertiary;
+    // For buttons with gradients, use white text for better contrast
+    return '#FFFFFF';
   };
   
   return (
@@ -49,23 +54,44 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
       activeOpacity={0.8}
       style={[style, disabled && styles.disabled]}
     >
-      <View style={[styles.buttonContainer, THEME.shadows.sm]}>
+      <View style={[
+        styles.buttonContainer, 
+        shadows.sm,
+        {
+          borderRadius: borderRadius.md,
+          borderColor: colors.border,
+        }
+      ]}>
         <BlurView
           intensity={disabled ? 10 : 20}
-          tint="dark"
+          tint={isDark ? 'dark' : 'light'}
           style={StyleSheet.absoluteFillObject}
         />
         <LinearGradient
-          colors={getGradientColors()}
+          colors={getGradientColors() as any}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFillObject}
         />
-        <View style={styles.buttonContent}>
+        <View style={[
+          styles.buttonContent,
+          {
+            paddingVertical: spacing.md,
+            paddingHorizontal: spacing.lg,
+          }
+        ]}>
           {loading ? (
             <ActivityIndicator color={getTextColor()} size="small" />
           ) : (
-            <Text style={[styles.buttonText, { color: getTextColor() }]}>{title}</Text>
+            <Text style={[
+              styles.buttonText, 
+              { 
+                color: getTextColor(),
+                fontFamily: 'System',
+              }
+            ]}>
+              {title}
+            </Text>
           )}
         </View>
       </View>
@@ -75,14 +101,10 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    borderRadius: THEME.borderRadius.md,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: THEME.colors.border,
   },
   buttonContent: {
-    paddingVertical: THEME.spacing.md,
-    paddingHorizontal: THEME.spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 52,
@@ -90,7 +112,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: '700',
-    fontFamily: THEME.fonts.bold,
     letterSpacing: 0.5,
   },
   disabled: {

@@ -1,4 +1,4 @@
-export const THEME = {
+export const DARK_THEME = {
   colors: {
     primary: '#8B5CF6',
     primaryLight: '#A78BFA',
@@ -81,4 +81,91 @@ export const THEME = {
     },
   },
 } as const;
+
+export const LIGHT_THEME = {
+  colors: {
+    primary: '#8B5CF6',
+    primaryLight: '#A78BFA',
+    primaryDark: '#7C3AED',
+    secondary: '#10B981',
+    secondaryLight: '#34D399',
+    accent: '#F59E0B',
+    accentLight: '#FBBF24',
+    
+    background: '#F5F7FA',
+    backgroundSecondary: '#FFFFFF',
+    
+    glass: 'rgba(255, 255, 255, 0.7)',
+    glassDark: 'rgba(255, 255, 255, 0.5)',
+    glassLight: 'rgba(255, 255, 255, 0.85)',
+    
+    text: {
+      primary: '#1F2937',
+      secondary: '#4B5563',
+      tertiary: '#9CA3AF',
+    },
+    
+    success: '#10B981',
+    warning: '#F59E0B',
+    error: '#EF4444',
+    info: '#3B82F6',
+    
+    gradients: {
+      primary: ['#8B5CF6', '#7C3AED'],
+      secondary: ['#10B981', '#059669'],
+      accent: ['#F59E0B', '#D97706'],
+      background: ['#F5F7FA', '#FFFFFF'],
+    },
+    
+    border: 'rgba(0, 0, 0, 0.08)',
+    borderLight: 'rgba(0, 0, 0, 0.04)',
+  },
+  fonts: {
+    regular: 'System',
+    medium: 'System', 
+    bold: 'System',
+  },
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
+  },
+  borderRadius: {
+    xs: 6,
+    sm: 10,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    full: 9999,
+  },
+  shadows: {
+    sm: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.08,
+      shadowRadius: 3,
+      elevation: 2,
+    },
+    md: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 4,
+    },
+    lg: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.12,
+      shadowRadius: 12,
+      elevation: 8,
+    },
+  },
+} as const;
+
+// Export THEME for backward compatibility (defaults to dark)
+export const THEME = DARK_THEME;
 

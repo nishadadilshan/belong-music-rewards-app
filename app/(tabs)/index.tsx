@@ -5,13 +5,14 @@ import { useRouter } from 'expo-router';
 import { ChallengeList } from '../../src/components/challenge/ChallengeList';
 import { useChallenges } from '../../src/hooks/useChallenges';
 import { useMusicPlayer } from '../../src/hooks/useMusicPlayer';
-import { THEME } from '../../src/constants/theme';
+import { useTheme } from '../../src/hooks/useTheme';
 import { MusicChallenge } from '../../src/types';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { challenges, loading, refreshChallenges } = useChallenges();
   const { play } = useMusicPlayer();
+  const { colors, spacing, fonts } = useTheme();
 
   useEffect(() => {
     refreshChallenges();
@@ -30,14 +31,18 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Music Rewards</Text>
-        <Text style={styles.subtitle}>Complete challenges to earn points</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
+      <View style={[styles.header, { padding: spacing.lg, paddingBottom: spacing.md }]}>
+        <Text style={[styles.title, { color: colors.text.primary, fontFamily: fonts.bold, marginBottom: spacing.xs }]}>
+          Music Rewards
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.text.secondary, fontFamily: fonts.regular, marginTop: spacing.xs }]}>
+          Complete challenges to earn points
+        </Text>
       </View>
       {loading ? (
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading challenges...</Text>
+          <Text style={[styles.loadingText, { color: colors.text.secondary }]}>Loading challenges...</Text>
         </View>
       ) : (
         <ChallengeList
@@ -53,25 +58,17 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
   },
   header: {
-    padding: THEME.spacing.lg,
-    paddingBottom: THEME.spacing.md,
+    // Dynamic styles applied inline
   },
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: THEME.colors.text.primary,
-    fontFamily: THEME.fonts.bold,
-    marginBottom: THEME.spacing.xs,
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 16,
-    color: THEME.colors.text.secondary,
-    fontFamily: THEME.fonts.regular,
-    marginTop: THEME.spacing.xs,
   },
   loadingContainer: {
     flex: 1,
@@ -79,7 +76,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    color: THEME.colors.text.secondary,
     fontSize: 16,
   },
 });

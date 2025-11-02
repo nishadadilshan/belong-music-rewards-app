@@ -2,13 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GlassCard } from '../../src/components/ui/GlassCard';
+import { ThemeToggle } from '../../src/components/ui/ThemeToggle';
 import { useUserStore } from '../../src/stores/userStore';
 import { useChallenges } from '../../src/hooks/useChallenges';
-import { THEME } from '../../src/constants/theme';
+import { useTheme } from '../../src/hooks/useTheme';
 
 export default function ProfileScreen() {
   const { totalPoints, completedChallenges } = useUserStore();
   const { challenges } = useChallenges();
+  const { colors, spacing } = useTheme();
 
   const completedChallengesData = challenges.filter((c) =>
     completedChallenges.includes(c.id)
@@ -20,23 +22,25 @@ export default function ProfileScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>Profile</Text>
+          <Text style={[styles.title, { color: colors.text.primary }]}>Profile</Text>
         </View>
+
+        <ThemeToggle style={{ marginBottom: spacing.md }} />
 
         <GlassCard style={styles.statsCard}>
           <View style={styles.statsContent}>
-            <Text style={styles.statsLabel}>Total Points</Text>
-            <Text style={styles.statsValue}>{totalPoints}</Text>
+            <Text style={[styles.statsLabel, { color: colors.text.secondary }]}>Total Points</Text>
+            <Text style={[styles.statsValue, { color: colors.text.primary }]}>{totalPoints}</Text>
           </View>
         </GlassCard>
 
         <GlassCard style={styles.statsCard}>
           <View style={styles.statsContent}>
-            <Text style={styles.statsLabel}>Completed Challenges</Text>
-            <Text style={styles.statsValue}>
+            <Text style={[styles.statsLabel, { color: colors.text.secondary }]}>Completed Challenges</Text>
+            <Text style={[styles.statsValue, { color: colors.text.primary }]}>
               {completedChallenges.length} / {challenges.length}
             </Text>
           </View>
@@ -44,15 +48,15 @@ export default function ProfileScreen() {
 
         {completedChallengesData.length > 0 && (
           <View style={styles.completedSection}>
-            <Text style={styles.sectionTitle}>Completed Challenges</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>Completed Challenges</Text>
             {completedChallengesData.map((challenge) => (
               <GlassCard key={challenge.id} style={styles.challengeCard}>
                 <View style={styles.challengeContent}>
                   <View>
-                    <Text style={styles.challengeTitle}>{challenge.title}</Text>
-                    <Text style={styles.challengeArtist}>{challenge.artist}</Text>
+                    <Text style={[styles.challengeTitle, { color: colors.text.primary }]}>{challenge.title}</Text>
+                    <Text style={[styles.challengeArtist, { color: colors.text.secondary }]}>{challenge.artist}</Text>
                   </View>
-                  <Text style={styles.challengePoints}>+{challenge.points} pts</Text>
+                  <Text style={[styles.challengePoints, { color: colors.accent }]}>+{challenge.points} pts</Text>
                 </View>
               </GlassCard>
             ))}
@@ -66,53 +70,48 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
   },
   scrollContent: {
-    padding: THEME.spacing.lg,
+    padding: 24,
   },
   header: {
-    marginBottom: THEME.spacing.lg,
+    marginBottom: 24,
   },
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: THEME.colors.text.primary,
-    fontFamily: THEME.fonts.bold,
+    fontFamily: 'System',
     letterSpacing: -0.5,
   },
   statsCard: {
-    padding: THEME.spacing.lg,
-    marginBottom: THEME.spacing.md,
+    padding: 24,
+    marginBottom: 16,
   },
   statsContent: {
     alignItems: 'center',
   },
   statsLabel: {
-    color: THEME.colors.text.secondary,
     fontSize: 14,
-    fontFamily: THEME.fonts.regular,
-    marginBottom: THEME.spacing.sm,
+    fontFamily: 'System',
+    marginBottom: 8,
   },
   statsValue: {
-    color: THEME.colors.text.primary,
     fontSize: 36,
     fontWeight: 'bold',
-    fontFamily: THEME.fonts.bold,
+    fontFamily: 'System',
   },
   completedSection: {
-    marginTop: THEME.spacing.lg,
+    marginTop: 24,
   },
   sectionTitle: {
-    color: THEME.colors.text.primary,
     fontSize: 20,
     fontWeight: '600',
-    fontFamily: THEME.fonts.medium,
-    marginBottom: THEME.spacing.md,
+    fontFamily: 'System',
+    marginBottom: 16,
   },
   challengeCard: {
-    padding: THEME.spacing.md,
-    marginBottom: THEME.spacing.sm,
+    padding: 16,
+    marginBottom: 8,
   },
   challengeContent: {
     flexDirection: 'row',
@@ -120,22 +119,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   challengeTitle: {
-    color: THEME.colors.text.primary,
     fontSize: 16,
     fontWeight: '600',
-    fontFamily: THEME.fonts.medium,
-    marginBottom: THEME.spacing.xs,
+    fontFamily: 'System',
+    marginBottom: 4,
   },
   challengeArtist: {
-    color: THEME.colors.text.secondary,
     fontSize: 14,
-    fontFamily: THEME.fonts.regular,
+    fontFamily: 'System',
   },
   challengePoints: {
-    color: THEME.colors.accent,
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: THEME.fonts.bold,
+    fontFamily: 'System',
   },
 });
 
