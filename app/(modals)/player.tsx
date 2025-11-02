@@ -25,6 +25,8 @@ export default function PlayerScreen() {
     setPlaybackSpeed,
     loading,
     error,
+    retry,
+    isRetrying,
   } = useMusicPlayer();
   const {
     currentPoints,
@@ -87,7 +89,7 @@ export default function PlayerScreen() {
   if (!currentTrack) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
+        <View style={styles.errorContainerFullScreen}>
           <Text style={styles.errorText}>No track selected</Text>
           <TouchableOpacity onPress={() => router.back()}>
             <Text style={styles.backButton}>Go Back</Text>
@@ -184,7 +186,18 @@ export default function PlayerScreen() {
         />
 
         {error && (
-          <Text style={styles.errorText}>{error}</Text>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity
+              style={[styles.retryButton, (loading || isRetrying) && styles.disabled]}
+              onPress={retry}
+              disabled={loading || isRetrying}
+            >
+              <Text style={styles.retryButtonText}>
+                {isRetrying ? 'Retrying...' : '🔄 Retry'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
 
         <View style={styles.controls}>
@@ -333,10 +346,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: THEME.fonts.regular,
   },
+  errorContainer: {
+    marginVertical: THEME.spacing.md,
+    alignItems: 'center',
+    padding: THEME.spacing.md,
+  },
   errorText: {
     color: THEME.colors.error,
     textAlign: 'center',
-    marginVertical: THEME.spacing.md,
+    marginBottom: THEME.spacing.sm,
+    fontSize: 14,
+    fontFamily: THEME.fonts.regular,
+  },
+  retryButton: {
+    marginTop: THEME.spacing.sm,
+    paddingVertical: THEME.spacing.sm,
+    paddingHorizontal: THEME.spacing.md,
+    borderRadius: THEME.borderRadius.md,
+    backgroundColor: THEME.colors.primary,
+    ...THEME.shadows.sm,
+  },
+  retryButtonText: {
+    color: THEME.colors.text.primary,
+    fontSize: 14,
+    fontFamily: THEME.fonts.medium,
+    fontWeight: '600',
   },
   controls: {
     flexDirection: 'row',
@@ -449,6 +483,11 @@ const styles = StyleSheet.create({
   speedButtonTextActive: {
     color: THEME.colors.text.primary,
     fontWeight: 'bold',
+  },
+  errorContainerFullScreen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
