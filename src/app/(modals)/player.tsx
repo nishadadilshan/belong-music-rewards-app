@@ -3,12 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import { GlassCard } from '../../src/components/ui/GlassCard';
-import { PointsCounter } from '../../src/components/ui/PointsCounter';
-import { useMusicPlayer } from '../../src/hooks/useMusicPlayer';
-import { usePointsCounter } from '../../src/hooks/usePointsCounter';
-import { useMusicStore } from '../../src/stores/musicStore';
-import { THEME } from '../../src/constants/theme';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { PointsCounter } from '../../components/ui/PointsCounter';
+import { useMusicPlayer } from '../../hooks/useMusicPlayer';
+import { usePointsCounter } from '../../hooks/usePointsCounter';
+import { useMusicStore } from '../../stores/musicStore';
+import { THEME } from '../../constants/theme';
 
 export default function PlayerScreen() {
   const router = useRouter();
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.colors.primary,
     borderRadius: THEME.borderRadius.full,
   },
-  errorContainer: {
+  errorContainerFullScreen: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -484,10 +484,6 @@ const styles = StyleSheet.create({
     color: THEME.colors.text.primary,
     fontWeight: 'bold',
   },
-  errorContainerFullScreen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
 });
+
 

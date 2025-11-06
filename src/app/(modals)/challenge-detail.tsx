@@ -2,12 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { GlassCard } from '../../src/components/ui/GlassCard';
-import { GlassButton } from '../../src/components/ui/GlassButton';
-import { useMusicStore } from '../../src/stores/musicStore';
-import { useUserStore } from '../../src/stores/userStore';
-import { useMusicPlayer } from '../../src/hooks/useMusicPlayer';
-import { THEME } from '../../src/constants/theme';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { GlassButton } from '../../components/ui/GlassButton';
+import { useMusicStore } from '../../stores/musicStore';
+import { useUserStore } from '../../stores/userStore';
+import { useMusicPlayer } from '../../hooks/useMusicPlayer';
+import { THEME } from '../../constants/theme';
 
 export default function ChallengeDetailScreen() {
   const router = useRouter();
@@ -260,4 +260,5 @@ const styles = StyleSheet.create({
     marginTop: THEME.spacing.md,
   },
 });
+
 

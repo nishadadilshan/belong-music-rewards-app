@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ChallengeList } from '../../src/components/challenge/ChallengeList';
-import { useChallenges } from '../../src/hooks/useChallenges';
-import { useMusicPlayer } from '../../src/hooks/useMusicPlayer';
-import { useTheme } from '../../src/hooks/useTheme';
-import { MusicChallenge } from '../../src/types';
+import { ChallengeList } from '../../components/challenge/ChallengeList';
+import { useChallenges } from '../../hooks/useChallenges';
+import { useMusicPlayer } from '../../hooks/useMusicPlayer';
+import { useTheme } from '../../hooks/useTheme';
+import { MusicChallenge } from '../../types';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -79,4 +79,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
 

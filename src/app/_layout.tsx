@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Slot } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { setupTrackPlayer } from '../src/services/audioService';
-import { useMusicStore } from '../src/stores/musicStore';
+import { setupTrackPlayer } from '../services/audioService';
+import { useMusicStore } from '../stores/musicStore';
 
 export default function RootLayout() {
   const { loadChallenges } = useMusicStore();
@@ -20,3 +20,5 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+

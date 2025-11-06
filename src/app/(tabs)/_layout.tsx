@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../../src/hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 
 const TabIcon = ({ name, focused, colors }: { name: string; focused: boolean; colors: any }) => {
   return (
@@ -170,4 +170,5 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
 });
+
 

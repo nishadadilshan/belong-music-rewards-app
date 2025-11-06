@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GlassCard } from '../../src/components/ui/GlassCard';
-import { ThemeToggle } from '../../src/components/ui/ThemeToggle';
-import { useUserStore } from '../../src/stores/userStore';
-import { useChallenges } from '../../src/hooks/useChallenges';
-import { useTheme } from '../../src/hooks/useTheme';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { ThemeToggle } from '../../components/ui/ThemeToggle';
+import { useUserStore } from '../../stores/userStore';
+import { useChallenges } from '../../hooks/useChallenges';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function ProfileScreen() {
   const { totalPoints, completedChallenges } = useUserStore();
@@ -40,7 +40,7 @@ export default function ProfileScreen() {
         <GlassCard style={styles.statsCard}>
           <View style={styles.statsContent}>
             <Text style={[styles.statsLabel, { color: colors.text.secondary }]}>Completed Challenges</Text>
-            <Text style={[styles.statsValue, { color: colors.text.primary }]}>
+            <Text style={[styles.statsValue, { color: colors.text.primary }]}> 
               {completedChallenges.length} / {challenges.length}
             </Text>
           </View>
@@ -134,4 +134,5 @@ const styles = StyleSheet.create({
     fontFamily: 'System',
   },
 });
+
 
