@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -8,6 +8,7 @@ import { PointsCounter } from '../../components/ui/PointsCounter';
 import { useMusicPlayer } from '../../hooks/useMusicPlayer';
 import { usePointsCounter } from '../../hooks/usePointsCounter';
 import { useMusicStore } from '../../stores/musicStore';
+import { useChallenges } from '../../hooks/useChallenges';
 import { THEME } from '../../constants/theme';
 
 export default function PlayerScreen() {
@@ -37,6 +38,8 @@ export default function PlayerScreen() {
     stopCounting,
   } = usePointsCounter();
   const { updateProgress } = useMusicStore();
+  const { completeChallenge } = useChallenges();
+  const hasAwardedRef = useRef(false);
 
   const [hasStarted, setHasStarted] = useState(false);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
@@ -61,10 +64,23 @@ export default function PlayerScreen() {
   }, [progress, currentTrack, isActive, updateProgress]);
 
   useEffect(() => {
-    if (progress >= 100 && currentTrack) {
+    if (!currentTrack) return;
+
+    // Be tolerant of floating precision and timing updates from TrackPlayer
+    const hasReachedEnd = progress >= 99;
+    if (hasReachedEnd) {
       stopCounting();
+      if (!hasAwardedRef.current) {
+        hasAwardedRef.current = true;
+        completeChallenge(currentTrack.id);
+      }
     }
   }, [progress, currentTrack, stopCounting]);
+
+  useEffect(() => {
+    // Reset award flag when track changes
+    hasAwardedRef.current = false;
+  }, [currentTrack?.id]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
